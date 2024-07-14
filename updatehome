@@ -1,0 +1,3 @@
+#!/bin/fish
+nix build .#homeConfigurations.user@snowfox.activationPackage
+./result/activate
