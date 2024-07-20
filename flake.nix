@@ -42,7 +42,7 @@ let
 		snowfall = {
 			namespace = "arctic";
 			meta = {
-                name = "acrtic config";
+                name = "acrtic_config";
                 title = "Arctic Config";
 			};
 		};

@@ -37,23 +37,6 @@
     keyMap = "de";
   };
 
-services.monado = {
-  enable = true;
-  defaultRuntime = true; # Register as default OpenXR runtime
-};
-
-boot.kernelPatches = [
-  {
-    name = "amdgpu-ignore-ctx-privileges";
-    patch = pkgs.fetchpatch {
-      name = "cap_sys_nice_begone.patch";
-      url = "https://github.com/Frogging-Family/community-patches/raw/master/linux61-tkg/cap_sys_nice_begone.mypatch";
-      hash = "sha256-Y3a0+x2xvHsfLax/uwycdJf3xLxvVfkfDVqjkxNaYEo=";
-    };
-  }
-];
-
-
 services.greetd = {
   enable = true;
   settings = rec {
@@ -65,9 +48,6 @@ services.greetd = {
   };
 };
   #services.xserver.videoDrivers = ["AMD"];
-
-  sound.enable = true;
-
 
   services.pipewire = {
     enable = true;

@@ -9,8 +9,8 @@ in
 	options.arctic.desktop.hyprland = {
 		enable = mkEnableOption "hyprland"; 
 		wallpaper = mkOption {
-			type = type.str;
-			description = "what wallpaper to use";
+			type = with types; str;
+			description = "what wallpaper out of the images package to use";
 		};
 	};
 
@@ -56,10 +56,8 @@ config = mkIf cfg.enable {
 
 	env = XCURSOR_SIZE,24
 
-
-	exec-once = swww-daemon && swww img ${cfg.wallpaper}
-	exec = ${pkgs.arctic.nord_bar}/bin/nord_bar &
-	# exec-once = librewolf 
+	exec-once = swww-daemon && swww img ${pkgs.arctic.wallpaper}/wallpapers/${cfg.wallpaper}
+	exec-once = ${pkgs.arctic.nord_bar}/bin/nord_bar &
 	exec-once = hyprctl setcursor Bibata-Modern-Ice 24
 
 

@@ -6,7 +6,7 @@ arctic = {
 	desktop =  {
 		hyprland = {
 			enable = true;
-			wallpaper = "./wall.png";
+			wallpaper = "newpaper.png";
 		};
 		fuzzle.enable = true;
 		dunst.enable = true;

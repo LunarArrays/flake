@@ -15,6 +15,7 @@ with lib.arctic;{
 		environment.systemPackages = with pkgs.arctic; [
 			nekofetch
 			nord_bar
+			wallpaper
 			inputs.neovim.packages.${system}.default
 		];
 	${namespace} = 
