@@ -14,6 +14,9 @@
   '';
   nix.package = pkgs.nixVersions.latest;
 
+    boot.binfmt.emulatedSystems = ["i686-linux" "aarch64-linux"];
+    nix.settings.extra-platforms = config.boot.binfmt.emulatedSystems;
+
   boot.loader = {
 	grub.device = "nodev";
 	grub.efiSupport = true;
@@ -34,7 +37,7 @@
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
-    keyMap = "de";
+    keyMap = "en";
   };
 
 services.greetd = {
