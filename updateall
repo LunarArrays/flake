@@ -1,0 +1,15 @@
+#!/bin/sh 
+printf "................rebuild flake.lock..................\n"
+sudo nix flake update
+printf "rebuild flake.lock\n"
+printf "..............switching to new config................\n"
+sudo nixos-rebuild switch --flake ~/.dotfiles/.# --show-trace
+printf "switched to new config\n"
+printf "..............building new homeManager...............\n"
+nix build ~/.dotfiles/.#homeManagerConfigurations.user.activationPackage
+printf "new homeManager config build\n"
+printf ".............activating homeManager conf.............\n"
+~/.dotfiles/result/activate
+printf "finished\n"
+
+

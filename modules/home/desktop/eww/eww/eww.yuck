@@ -1,0 +1,117 @@
+(defwindow bar
+           :monitor 0
+           :geometry (geometry :x "0%"
+                               :y "0.25%"
+                               :width "100%"
+                               :height "20px"
+                               :anchor "top center")
+           :stacking "fg"
+           :exclusive true
+           :windowtype "dock"
+           :wm-ignore false
+(bar)
+)
+
+(defwidget bar []
+  (centerbox :orientation "h"
+    (workspaces :class "barpart")
+    (box :class "title" "${window}")
+    (sidestuff)
+  )
+)
+
+(defwidget sidestuff []
+  (box :halign "end" :height "15px" :space-evenly "false" :class "barpart"
+    (box :class "scale" " ${volume}% " (scale :min 0 :max 101 :value volume  :onchange "pamixer --set-volume {}"))
+    (box :class "scale" " ${round(EWW_RAM.used_mem_perc, 0)}% " (scale :min 0 :max 101 :value {EWW_RAM.used_mem_perc}  :active false))
+    (box  "${time}")
+    (button :onclick "eww open power" :class "powermenubutton" "" )
+  )
+)
+
+(defwindow power 
+  :class "power"
+  :monitor 0
+  :geometry (geometry 
+  :x "94%"
+  :y "1%"
+  :width "140px"
+  :height "45px")
+  :stacking "fg"
+  (box :class "powerbox"
+    (powerbutton  :class "powerbutton" :cmd "systemctl poweroff" :n "")
+    (powerbutton  :class "powerbutton" :cmd "systemctl reboot" :n "󰑓")
+    (powerbutton  :class "powerbutton" :cmd "eww close power" :n "")
+  )
+)
+
+(defwidget workspaces [] 
+(box :space-evenly "false" :class "barpart" :halign "start"
+  (box :class "invis"
+  (box :class "${aicon}")
+  (box :class "${bicon}")
+  (box :class "${cicon}")
+  (box :class "${dicon}")
+  (box :class "${eicon}")
+  (box :class "${ficon}")
+  (box :class "${gicon}")
+  (box :class "${hicon}")
+  (box :class "${iicon}") 
+  (box :class "${jicon}")
+  )
+  (eventbox :onscroll "bash ~/.config/eww/scripts/change-active-workspace {} ${current_workspace}" :class "workspaces-widget"
+    (box :space-evenly false 
+      (for workspace in workspaces 
+        (workspacebutton :workspace workspace)       
+        )
+      )
+    )
+  (box :class "space")    
+  )
+)
+
+(defwidget workspacebutton [workspace]
+  (eventbox :onclick "hyprctl dispatch workspace ${workspace.id}"
+  (box :class "workspace-entry ${workspace.id == current_workspace ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"  
+   "${workspace.id == 1 ? "${aicon}" : "${workspace.id == 2 ? "${bicon}" : "${workspace.id == 3 ? "${cicon}" : "${workspace.id == 4 ? "${dicon}" : "${workspace.id == 5 ? "${eicon}" : "${workspace.id == 6 ? "${ficon}" : "${workspace.id == 7 ? "${gicon}" : "${workspace.id == 8 ? "${hicon}" : "${workspace.id == 9 ? "${iicon}" : "${jicon}"}"}"}"}"}"}"}"}"}")
+  )
+)
+
+(defwidget data [value class icon]
+		(box :class "${class}_module" :vexpand "false" :hexpand "false" 
+            (circular-progress :value {value}
+                :class "${class}bar"
+                :thickness 4
+            (button 
+                :class "iconmem"
+                :tooltip "using ${value}% ${class}"
+                :onclick "$HOME/.config/eww/bar/scripts/pop system"
+                :show_truncated false
+                :wrap false
+                "${icon}"
+			)
+			)
+		)
+)
+
+(defwidget powerbutton [cmd n] (button :class "powerbutton" :onclick "${cmd}" :orientation "h"  n ))
+(defpoll mute :interval "1s" :run-while true "pamixer --get-mute")
+(defpoll aicon :interval "1s" "~/.config/eww/scripts/icons 1")
+(defpoll bicon :interval "1s" "~/.config/eww/scripts/icons 2")
+(defpoll cicon :interval "1s" "~/.config/eww/scripts/icons 3")
+(defpoll dicon :interval "1s" "~/.config/eww/scripts/icons 4")
+(defpoll eicon :interval "2s" "~/.config/eww/scripts/icons 5")
+(defpoll ficon :interval "2s" "~/.config/eww/scripts/icons 6")
+(defpoll gicon :interval "2s" "~/.config/eww/scripts/icons 7")
+(defpoll hicon :interval "2s" "~/.config/eww/scripts/icons 8")
+(defpoll iicon :interval "2s" "~/.config/eww/scripts/icons 9")
+(defpoll jicon :interval "2s" "~/.config/eww/scripts/icons 10")
+(defpoll time :interval "1s"
+              :initial "initial-value"  ; optional, defaults to poll at startup
+              :run-while time-visible   ; optional, defaults to 'true'
+  `date +%H:%M:%S`)
+(defpoll volume :interval "1s" "pamixer --get-volume")
+(deflisten window :initial "..." "bash ~/.config/eww/scripts/get-window-title")
+(deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
+(deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
+

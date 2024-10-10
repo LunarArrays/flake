@@ -1,0 +1,160 @@
+*{
+	all: unset; 
+	color: #d8dee9;
+	font-family:FiraCodeNerdFont;
+}
+
+.power {
+  all: unset;
+  background-color: #333d45;
+  border-radius: 20px;
+}
+
+button {
+	all: unset;
+	background-color: #5e81ac;
+
+	border-radius: 10px;
+}
+
+scale trough {
+	all: unset;
+	background-color: #2c343a;
+	border-radius: 16px;
+	min-height: 10px;
+	min-width: 2px;
+}
+
+scale trough highlight {
+	background-color: #5e81ac;
+	border-radius: 16px;
+}
+
+button:hover {
+	background-color: #81a1c1;
+
+}
+
+.barpart{
+	background-color: #3b4252;
+	border-width: 2px;
+	border-radius: 45px;
+	margin-left: 15px;
+	margin-right: 15px;
+	border-color: #5e81ac;
+	border-style:solid;
+	font-size: medium;
+	font-weight: 600;
+}
+
+.title {
+	border-color: #5e81ac;
+	border-style:solid;
+	font-size: medium;
+	font-weight: 600;
+	padding-left: 15px;
+	padding-right: 15px;
+	background-color: #3b4252;
+	border-width: 2px;
+	border-radius: 16px;
+}
+
+.powerbox {
+	padding: 5px;
+}
+
+.powerbutton {
+border-radius: 20px;
+margin-right: 2px;
+margin-left: 3px;
+}
+
+.powermenubutton {
+padding-left: 21px;
+padding-right: 22px;
+border-radius: 20px;
+}
+
+.data {	margin-right: 15px; font-size: medium; font-weight: 700;}
+
+.volume { margin-right: 15px; }
+
+.scale {
+margin-left: 15px;
+margin-right: 15px;
+}
+
+.progress {
+padding-left: 20px; 
+padding-right: 20px; 
+}
+
+.occupied 
+{
+	font-size: x-small;
+	font-weight: 100;
+	background-color: #3b4252;
+	border-radius: 120px;
+	min-width: 10px;
+	border-width: 2px;
+	border-style:solid;
+	border-color:#5e81ac;
+	margin:3px;
+	padding: 0px 2px 0px 3px;
+}
+
+.empty {
+	border-color: #d8dee9;
+	color: #5e81ac;
+	font-size: x-small;
+	font-weight: 100;
+	background-color: #3b4252;
+	border-radius: 120px;
+	min-width: 10px;
+	border-width: 2px;
+	border-style:solid;
+	margin:3px;
+	padding: 0px 2px 0px 3px;
+}
+
+.logo {
+	font-size: medium;
+	all: unset;
+	margin-right: 7px;	
+	margin-left: 10px;	
+}
+
+.current{
+	font-size: x-small;
+	font-weight: 700;
+	background-color: #5e81ac;
+	color: #1c2d3d;
+	border-radius: 15px;
+	min-width: 10px;
+	border-style:solid;
+	border-color:#5e81ac;
+}
+
+.space {
+	margin: 5px;
+}
+
+.membar {
+  color: #e0b089;
+    background-color: #38384d;
+  border-radius: 10px;
+}
+
+.mem_module {
+	margin: 0px 10px 0px 3px;
+}
+
+.diskbar {
+  color: #e0b089;
+    background-color: #38384d;
+  border-radius: 10px;
+}
+
+.disk_module {
+	margin: 0px 10px 0px 3px;
+}
