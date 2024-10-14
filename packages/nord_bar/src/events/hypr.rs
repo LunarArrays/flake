@@ -6,6 +6,8 @@ use std::str::FromStr;
 use std::thread::current;
 use std::{env, thread};
 
+use crate::events::Event;
+
 pub struct HyprWindow 
 {
     pub class :Option<String>,
@@ -94,7 +96,6 @@ pub fn send_active_window(tx :glib::Sender<super::Event>)
         for line in stream.lines()
         { 
             let line = &line.unwrap();
-            println!("{}", &line);
             if line.len() < 13 {continue;}
             let active_window= line[..13] == *"activewindow>"; 
             if active_window
@@ -107,6 +108,8 @@ pub fn send_active_window(tx :glib::Sender<super::Event>)
     });
 }
 
+const CLOSE_WORD_LEN :usize = 13;
+const OPEN_WORD_LEN  :usize = 12;
 pub fn send_window_icons (tx :glib::Sender<super::Event>)
 {
     let xdk_dir = env::var("XDG_RUNTIME_DIR").unwrap();
@@ -116,6 +119,13 @@ pub fn send_window_icons (tx :glib::Sender<super::Event>)
         let mut workspaces :[Vec<SimpleHyprWidnow>; 11] = get_simple_workspaces();
         let mut active_workspace= get_curren_workspace();
         let stream = BufReader::new(stream);
+
+        for i  in 10 .. 1
+        {
+            let icons = get_icons_for_workspace(&workspaces[i]);
+            tx.send(Event::IconUpdate(i, icons));
+        }
+
         for line in stream.lines()
         { 
             let line = &line.unwrap();
@@ -126,7 +136,7 @@ pub fn send_window_icons (tx :glib::Sender<super::Event>)
             }
             if line[..5] == *"openw" {
                 let new_window = SimpleHyprWidnow::new();
-                let (_, mut info) = line.split_at(12);
+                let (_, mut info) = line.split_at(OPEN_WORD_LEN);
                 let segments :Vec<&str> = info.split(",").collect();
                 let new_window = SimpleHyprWidnow {
                     id: segments[0].to_owned(),
@@ -135,36 +145,29 @@ pub fn send_window_icons (tx :glib::Sender<super::Event>)
                 };
                 let opend_in :usize = segments[1].parse().expect("hyprctl sock err");
                 workspaces[opend_in].push(new_window);
-                println!("{}", get_icons_for_workspace(&workspaces[opend_in]));
+                let icons= get_icons_for_workspace(&workspaces[opend_in]);
+                tx.send(Event::IconUpdate(opend_in, icons));
+
             } 
             if line[..6] == *"closew"
             {
                 let new_window = SimpleHyprWidnow::new();
-                let (_, mut id) = line.split_at(13);
+                let (_, mut id) = line.split_at(CLOSE_WORD_LEN);
                 let i  = 1;
-                let out = "";
+                let mut emit :Option<super::Event> = None;
                 let mut closed_on = 0;
                 for workspace in &mut workspaces
                 {
-                    let mut  i = 0;
                     let mut quit = false;
-                    for window in & *workspace 
-                    { 
-                        if window.id  == id 
-                        {
-                            println!("closed {}", &<std::option::Option<std::string::String> as Clone>::clone(&(window).title).unwrap());
-                            quit = true;
-                            break;
-                        }
-                        i += 1;
-                    }
-                    if i != 0
-                    {
-                        workspace.remove(i - 1);
+                    let index = workspace.iter().position(|x| x.id == id);
+                    if index.is_some() {
+                        quit = true;
+                        workspace.remove(index.unwrap());
                         let out = get_icons_for_workspace(workspace);
-                        println!("{}: ({})",closed_on, out);
+                        emit = Some(Event::IconUpdate(closed_on, out));
                     }
                     if quit {
+                        tx.send(emit.unwrap()).unwrap();
                         break;
                     }
                     closed_on += 1;

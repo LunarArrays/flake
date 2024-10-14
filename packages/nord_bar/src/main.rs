@@ -38,35 +38,25 @@ fn activate(application: &gtk4::Application) {
     gtk!(
         - left_bar_box :Box(Orientation::Horizontal, 0)
                 css_classes(&["workspace_preview"])
-            -- workspace_0 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_0 :Label(Some(""))
+            -- workspace_0 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_1 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_1 :Label(Some(""))
+            -- workspace_1 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_2 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_2 :Label(Some(""))
+            -- workspace_2 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_3 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_3 :Label(Some(""))
+            -- workspace_3 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_4 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_4 :Label(Some(""))
+            -- workspace_4 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_5 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_5 :Label(Some(""))
+            -- workspace_5 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_6 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_6 :Label(Some(""))
+            -- workspace_6 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_7 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_7 :Label(Some(""))
+            -- workspace_7 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_8 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_8 :Label(Some(""))
+            -- workspace_8 :Button()
                 css_classes(&["workspace_preview"])
-            -- workspace_9 :Box(Orientation::Horizontal, 0)
-                --- workspace_l_9 :Label(Some(""))
+            -- workspace_9 :Button()
                 css_classes(&["workspace_preview"])
 
         - window_title :Button()
@@ -115,6 +105,7 @@ fn activate(application: &gtk4::Application) {
         -music_box :CenterBox()
         center_widget(Some(&music_widget))
     );
+    let workspace_vec = vec![workspace_0, workspace_1, workspace_2, workspace_3, workspace_4, workspace_5, workspace_6, workspace_7, workspace_8, workspace_9];
 
    mid_overlay.add_overlay(&window_title);
 
@@ -144,18 +135,6 @@ fn activate(application: &gtk4::Application) {
     });
 
     let tick = move|| {
-        let hypr_workspaces = hypr::get_formated_workspace();
-        workspace_l_0.set_label(&hypr::to_icon(&hypr_workspaces[1]));
-        workspace_l_1.set_label(&hypr::to_icon(&hypr_workspaces[2]));
-        workspace_l_2.set_label(&hypr::to_icon(&hypr_workspaces[3]));
-        workspace_l_3.set_label(&hypr::to_icon(&hypr_workspaces[4]));
-        workspace_l_4.set_label(&hypr::to_icon(&hypr_workspaces[5]));
-        workspace_l_5.set_label(&hypr::to_icon(&hypr_workspaces[6]));
-        workspace_l_6.set_label(&hypr::to_icon(&hypr_workspaces[7]));
-        workspace_l_7.set_label(&hypr::to_icon(&hypr_workspaces[8]));
-        workspace_l_8.set_label(&hypr::to_icon(&hypr_workspaces[9]));
-        workspace_l_9.set_label(&hypr::to_icon(&hypr_workspaces[10]));
-
         let song_cmd = &Command::new("rmpc")
              .arg("get").output().unwrap();
         let song_data = str::from_utf8(&song_cmd.stdout).expect("rmpc get is not utf8")
@@ -189,6 +168,24 @@ fn activate(application: &gtk4::Application) {
             },
             events::Event::ActiveWindowUpdate(title) => {
                 window_title.set_label(&title);
+            },
+            events::Event::IconUpdate(num, icons) => {
+                println!("{}: ({})", num, icons);
+                workspace_vec[num - 1].set_label(&icons);
+                let mut first_found = false;
+                for workspace in <Vec<gtk4::Button> as Clone>::clone(&workspace_vec).iter().rev()
+                {
+                    println!("{}", workspace.label().unwrap_or("None".into()));
+                    if first_found { continue; }
+                    if workspace.label() == Some("".into()) || workspace.label() == None
+                    {
+                        println!("hide");
+                        workspace.hide();
+                    } else {
+                        workspace.show();
+                        first_found = true;
+                    }
+                }
             },
             _ => (),
         }
